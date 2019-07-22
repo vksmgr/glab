@@ -131,9 +131,16 @@ class GDrive:
             'title': fileName,
             'parents': [{'kind': 'drive#fileLink', 'id': parentFolderID}]
         })
-        file.SetContentString(data)
+        file.SetContentString(str(data))
         file.Upload()
         self.db.update(fileName, file['id'])
+    def getId(self, key):
+        '''
+        this function will return the id of the associated key
+        :param key: it is the name of the file
+        :return: this will return associate google drive file id
+        '''
+        return self.db.getValue(key)
 
 class LocalDB:
     '''

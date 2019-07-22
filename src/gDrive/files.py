@@ -7,7 +7,6 @@ this module contains the task
 '''
 import collections
 import glob
-import re
 
 class Files:
     def __init__(self, projRoot):
@@ -44,12 +43,17 @@ class Files:
         '''
         this will return the python files with the parent id it also return the defaultdict
         key as the parent name and value as the set.
-        :return:
+        :return: tuple.0: contains parent name and files under that folder
+                tuple.1: contains name of the file and the path to that file
         '''
         folders = [f[len(self.projRoot):] for f in glob.glob(self.projRoot + "**/*.py", recursive=True)]
         levDict = collections.defaultdict(set)
-
+        fLoc = {}
         for fold in folders:
+            try:
+                fLoc[fold.split("\\")[-1]] = self.projRoot+fold
+            except :
+                fLoc[fold.strip("\\")] = self.projRoot+fold
             itme = [fol for fol in fold.split("\\") if len(fol) > 0]
             for i in range(len(itme)):
                 if i == 0:
@@ -58,8 +62,9 @@ class Files:
                 else:
                     if self.chkPy(itme[i]):
                         levDict[itme[i - 1]].add(itme[i])
-
-        return levDict
+        print(fLoc)
+        print(levDict)
+        return levDict, fLoc
 
     def chkPy(self, filename):
         try:
